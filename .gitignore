@@ -61,3 +61,6 @@ target/
 *.png
 *.jpg
 *.jpeg
+
+# Our dear friend DS_Store
+.DS_Store
