@@ -1,6 +1,7 @@
 import sys
 import time
 import statistics
+import math
 from PIL import Image
 
 # Check args
@@ -39,7 +40,7 @@ def binarize(bw_pixels, threshold):
   bin_pixels = []
   
   for p in bw_pixels:
-    if p < bw_stdev:
+    if p < threshold:
       bin_pixels.append(0)
     else:
       bin_pixels.append(255)
@@ -58,16 +59,19 @@ bw_stdev = statistics.stdev(bw_pixels)
 end_time = time.time()
 print("time: " + str(end_time - start_time))
 
-# Generate a new image, based on this stdev
-print("generating binarized image...")
-start_time = time.time()
-bin_pixels = binarize(bw_pixels, bw_stdev)
-end_time = time.time()
-print("time: " + str(end_time - start_time))
+num_images = math.ceil(255 / bw_stdev)
+for i in range(1, num_images):
 
-# Show the new image
-bw_image = Image.new("L", rgb_image.size)
-bw_image.putdata(bin_pixels)
-bw_image.save("binarized.png")
-Image.open("binarized.png").show()
+  # Generate a new image, based on this stdev
+  print("generating binarized images with threshold " + str(bw_stdev*i))
+  start_time = time.time()
+  bin_pixels = binarize(bw_pixels, bw_stdev*i)
+  end_time = time.time()
+  print("time: " + str(end_time - start_time))
 
+  # Show the new image
+  bw_image = Image.new("L", rgb_image.size)
+  bw_image.putdata(bin_pixels)
+  bw_image.save("out" + str(i) + ".png")
+
+print("done generating " + str(num_images))
