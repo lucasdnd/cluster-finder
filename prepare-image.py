@@ -8,7 +8,7 @@ from PIL import Image
 if len(sys.argv) == 2:
   file_name = sys.argv[1]
 else:
-  print("Usage: python cluster-finder.py filename")
+  print("Usage: python prepare-image.py filename")
   sys.exit()
 
 # Open image
@@ -44,6 +44,7 @@ def binarize(bw_pixels, threshold):
       bin_pixels.append(0)
     else:
       bin_pixels.append(255)
+  
   return bin_pixels
 
 # Convert to bw
@@ -53,6 +54,7 @@ end_time = time.time()
 print("time: " + str(end_time - start_time))
 
 # Get stdev of pixel values
+# We use stdevs to create binarized images with different thresholds
 print("calculating stdev...")
 start_time = time.time()
 bw_stdev = statistics.stdev(bw_pixels)
