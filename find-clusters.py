@@ -89,6 +89,7 @@ def change_direction(direction):
   return direction
 
 # Search for clusters!
+start_time = time.time()
 for j in range(0, height):
   for i in range(0, width):
 
@@ -106,9 +107,12 @@ for j in range(0, height):
         current_cluster.append((i, j))
         checked.append((i, j))
         find_next(i, j)
-
-        print("found cluster with " + str(len(current_cluster)) + " pixels")
         clusters.append(current_cluster)
+
+  print(str(round(j / height * 100, 2)) + "%")
+
+end_time = time.time()
 
 print("clusters found: " + str(len(clusters)))
 print("pixels checked: " + str(len(checked)))
+print("time: " + str(end_time - start_time))
