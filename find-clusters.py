@@ -20,45 +20,67 @@ clusters = [] # A list of lists of pixels (tuples)
 checked = [] # A list of pixels (tuples) that have already been checked
 current_cluster = []
 
-def find_next(x, y, direction, not_found_count):
+# Recursively find pixels in a cluster.
+# The stop condition is: being on a pixel that already had all of its neighbors
+# checked
+def find_next(x, y):
 
-  # Update pixel position
-  if direction == 0:
-    y = y - 1
-  elif direction == 1:
-    x = x + 1
-  elif direction == 2:
-    y = y + 1
-  else:
-    x = x - 1
+  # Neighbors
+  next_x = x + 1
+  prev_x = x - 1
+  next_y = y + 1
+  prev_y = y - 1
+
+  # Keep them inside the image
+  if prev_x < 0:
+    prev_x = 0
+  elif next_x > width:
+    next_x = width
+  if prev_y < 0:
+    prev_y = 0
+  elif next_y > height:
+    next_y = height
+
+  # Stop condition
+  num_checked = 0
+  if (x, prev_y) in checked:
+    num_checked += 1
+  if (next_x, y) in checked:
+    num_checked += 1
+  if (x, next_y) in checked:
+    num_checked += 1
+  if (prev_x, y) in checked:
+    num_checked += 1
+
+  if num_checked == 4:
+    return
+
+  # Get the neighbors
+  pixel_up = bin_image.getpixel((x, prev_y))
+  pixel_right = bin_image.getpixel((next_x, y))
+  pixel_down = bin_image.getpixel((x, next_y))
+  pixel_left = bin_image.getpixel((prev_x, y))
+
+  # If a pixel is white, continue searching from its position
+  if pixel_up == 255 and (x, prev_y) not in checked:
+    current_cluster.append((x, prev_y))
+    checked.append((x, prev_y))
+    find_next(x, prev_y)
   
-  if x < 0:
-    x = 0
-  elif x > width:
-    x = width
-  if y < 0:
-    y = 0
-  elif y > height:
-    y = height
+  if pixel_right == 255 and (next_x, y) not in checked:
+    current_cluster.append((next_x, y))
+    checked.append((next_x, y))
+    find_next(next_x, y)
 
-  # Go!
-  pixel = bin_image.getpixel((x, y))
+  if pixel_down == 255 and (x, next_y) not in checked:
+    current_cluster.append((x, next_y))
+    checked.append((x, next_y))
+    find_next(x, next_y)
 
-  if pixel == 0:
-    checked.append((x, y))
-    direction = change_direction(direction)
-
-    # Stop condition
-    not_found_count += 1
-    if not_found_count > 3:
-      return
-    
-    find_next(x, y, direction, not_found_count)
-
-  elif (x, y) not in checked:
-    current_cluster.append((x, y))
-    checked.append((x, y))
-    find_next(x, y, direction, 0)
+  if pixel_left == 255 and (prev_x, y) not in checked:
+    current_cluster.append((prev_x, y))
+    checked.append((prev_x, y))
+    find_next(prev_x, y)
 
 def change_direction(direction):
   direction += 1
@@ -73,16 +95,18 @@ for j in range(0, height):
     current_cluster = []
     pixel = bin_image.getpixel((i, j))
     
+    # Black pixel: check, skip
     if pixel == 0:
       checked.append((i, j))
       continue
 
-    elif (i, j) not in checked:
-      current_cluster.append((i, j))
-      checked.append((i, j))
-      find_next(i, j, 0, 0)
+    # White pixel: if not checked yet, we found a cluster
+    else:
+      if (i, j) not in checked:
+        current_cluster.append((i, j))
+        checked.append((i, j))
+        find_next(i, j)
 
-      if len(current_cluster) > 1:
         print("found cluster with " + str(len(current_cluster)) + " pixels")
         clusters.append(current_cluster)
 
