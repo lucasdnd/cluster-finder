@@ -43,16 +43,12 @@ def find_next(x, y):
 
   # Stop condition
   num_checked = 0
-  if (x, prev_y) in checked:
-    num_checked += 1
-  if (next_x, y) in checked:
-    num_checked += 1
-  if (x, next_y) in checked:
-    num_checked += 1
-  if (prev_x, y) in checked:
-    num_checked += 1
-
-  if num_checked == 4:
+  up_checked = (x, prev_y) in checked
+  right_checked = (next_x, y) in checked
+  down_checked = (x, next_y) in checked
+  left_checked = (prev_x, y) in checked
+  
+  if up_checked and right_checked and down_checked and left_checked:
     return
 
   # Get the neighbors
@@ -62,22 +58,22 @@ def find_next(x, y):
   pixel_left = bin_image.getpixel((prev_x, y))
 
   # If a pixel is white, continue searching from its position
-  if pixel_up == 255 and (x, prev_y) not in checked:
+  if pixel_up == 255 and not up_checked:
     current_cluster.append((x, prev_y))
     checked.append((x, prev_y))
     find_next(x, prev_y)
   
-  if pixel_right == 255 and (next_x, y) not in checked:
+  if pixel_right == 255 and not right_checked:
     current_cluster.append((next_x, y))
     checked.append((next_x, y))
     find_next(next_x, y)
 
-  if pixel_down == 255 and (x, next_y) not in checked:
+  if pixel_down == 255 and not down_checked:
     current_cluster.append((x, next_y))
     checked.append((x, next_y))
     find_next(x, next_y)
 
-  if pixel_left == 255 and (prev_x, y) not in checked:
+  if pixel_left == 255 and not left_checked:
     current_cluster.append((prev_x, y))
     checked.append((prev_x, y))
     find_next(prev_x, y)
