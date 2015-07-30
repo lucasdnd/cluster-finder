@@ -9,6 +9,6 @@ In today's episode: Python finds clusters of pixels in an image
 
 ### How to
 
-1. Prepare an image: `python3 prepare-image.py filename`
+1. `python3 prepare-image.py filename`. That will generate several images, each being a binary version of the selected image with a different threshold level.
 
-2. Find clusters in the prepared image: `python3 find-clusters.py filename`
+2. `python3 find-clusters.py outN.png`, where N is the number of the image generated on step 1.
