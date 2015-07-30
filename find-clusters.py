@@ -34,12 +34,12 @@ def find_next(x, y):
   # Keep them inside the image
   if prev_x < 0:
     prev_x = 0
-  elif next_x > width:
-    next_x = width
+  elif next_x >= width:
+    next_x = width - 1
   if prev_y < 0:
     prev_y = 0
-  elif next_y > height:
-    next_y = height
+  elif next_y >= height:
+    next_y = height - 1
 
   # Stop condition
   num_checked = 0
