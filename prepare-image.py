@@ -61,7 +61,7 @@ bw_stdev = statistics.stdev(bw_pixels)
 end_time = time.time()
 print("time: " + str(end_time - start_time))
 
-num_images = math.ceil(255 / bw_stdev)
+num_images = round(255 / bw_stdev)
 for i in range(1, num_images):
 
   # Generate a new image, based on this stdev
